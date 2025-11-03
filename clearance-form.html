@@ -361,7 +361,7 @@
           <span class="spinner"></span>Submitting...
         </span>
       </button>
-      <button type="button" class="btn btn-secondary" onclick="window.close()">Cancel</button>
+      <button type="button" class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
     </div>
     
   </form>
@@ -379,13 +379,21 @@
     </div>
     <div class="success-body">
       <p class="success-name" id="successName"></p>
-      <p>Your clearance request has been successfully submitted. A member of our team will be in touch within 24 hours to discuss your requirements.</p>
-      <button class="btn btn-primary" onclick="closeSuccess()">Close</button>
+      <p>Your clearance request has been successfully submitted. Redirecting you to our support page...</p>
     </div>
   </div>
 </div>
 
 <script>
+// Handle cancel button
+function handleCancel() {
+  if (window.opener) {
+    window.close();
+  } else {
+    window.history.back();
+  }
+}
+
 // Capitalize first name
 document.getElementById('Name_First').addEventListener('input', function(e) {
   let value = e.target.value;
@@ -453,34 +461,28 @@ document.getElementById('clearanceForm').addEventListener('submit', function(e) 
       body: formData,
       mode: 'no-cors'
     }).then(() => {
-      // Show success
+      // Show success and redirect
       const fullName = (firstName + ' ' + lastName).trim();
       document.getElementById('successName').textContent = 'Thank you, ' + fullName + '!';
       document.getElementById('successModal').style.display = 'block';
       
-      // Reset form
-      document.getElementById('clearanceForm').reset();
-      document.getElementById('submitText').style.display = 'inline-block';
-      document.getElementById('loadingText').style.display = 'none';
-      document.getElementById('submitBtn').disabled = false;
+      // Redirect after 3 seconds
+      setTimeout(() => {
+        window.location.href = 'https://support.ausclear.com.au';
+      }, 3000);
     }).catch(() => {
       // Even on error, show success (no-cors doesn't return response)
       const fullName = (firstName + ' ' + lastName).trim();
       document.getElementById('successName').textContent = 'Thank you, ' + fullName + '!';
       document.getElementById('successModal').style.display = 'block';
       
-      document.getElementById('clearanceForm').reset();
-      document.getElementById('submitText').style.display = 'inline-block';
-      document.getElementById('loadingText').style.display = 'none';
-      document.getElementById('submitBtn').disabled = false;
+      // Redirect after 3 seconds
+      setTimeout(() => {
+        window.location.href = 'https://support.ausclear.com.au';
+      }, 3000);
     });
   }, 1500);
 });
-
-function closeSuccess() {
-  document.getElementById('successModal').style.display = 'none';
-  window.close();
-}
 </script>
 
 </body>
